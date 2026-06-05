@@ -116,11 +116,11 @@ export default function AdminPage() {
     <main className="mx-auto w-full max-w-5xl px-4 py-5 sm:px-6 sm:py-8">
       <header className="mb-6 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-soft text-xl ring-1 ring-brand/20">
+          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand text-xl text-white shadow-sm shadow-brand/40">
             💗
           </span>
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-brand-deep/80">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-deep">
               Panel admin
             </p>
             <h1 className="font-display text-lg font-bold leading-tight sm:text-xl">
@@ -134,6 +134,7 @@ export default function AdminPage() {
           size="sm"
           onClick={onLogout}
           disabled={loggingOut}
+          className="border-purple/30 font-semibold text-purple-deep hover:bg-purple-soft"
         >
           {loggingOut ? 'Saliendo…' : 'Salir'}
         </Button>
@@ -193,12 +194,13 @@ export default function AdminPage() {
           />
 
           <div className="grid gap-5 md:grid-cols-2 md:gap-6">
-            <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+            <section className="frame-yellow polaroid-tilt-l rounded-3xl p-3">
+              <div className="rounded-2xl bg-white p-4 sm:p-5">
               <div className="mb-3 flex items-baseline justify-between gap-3">
-                <h2 className="font-display text-base font-bold sm:text-lg">
+                <h2 className="text-flyer-purple font-display text-xl font-black uppercase tracking-tight sm:text-2xl">
                   Vendedores
                 </h2>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs font-semibold text-purple-deep/70">
                   {data.vendedores.length}
                 </span>
               </div>
@@ -225,14 +227,16 @@ export default function AdminPage() {
                   </li>
                 ))}
               </ul>
+              </div>
             </section>
 
-            <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+            <section className="frame-pink polaroid-tilt-r rounded-3xl p-3">
+              <div className="rounded-2xl bg-white p-4 sm:p-5">
               <div className="mb-3 flex items-baseline justify-between gap-3">
-                <h2 className="font-display text-base font-bold sm:text-lg">
+                <h2 className="text-flyer-purple font-display text-xl font-black uppercase tracking-tight sm:text-2xl">
                   Boletos vendidos
                 </h2>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs font-semibold text-purple-deep/70">
                   {data.ventas.length}/{TOTAL}
                 </span>
               </div>
@@ -264,6 +268,7 @@ export default function AdminPage() {
                   </li>
                 ))}
               </ul>
+              </div>
             </section>
           </div>
         </div>

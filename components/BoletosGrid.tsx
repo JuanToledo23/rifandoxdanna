@@ -14,20 +14,20 @@ interface BoletosGridProps {
 }
 
 const baseCell =
-  'ticket-cell aspect-square rounded-lg text-[11px] sm:text-xs font-medium flex items-center justify-center border transition-all duration-150 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+  'ticket-cell aspect-square rounded-lg text-[11px] sm:text-xs font-semibold flex items-center justify-center border-2 transition-all duration-150 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple focus-visible:ring-offset-2 focus-visible:ring-offset-background'
 
 const stateClasses: Record<Boleto['status'], string> = {
   disponible:
-    'bg-white/70 text-foreground/60 border-border hover:border-brand/60 hover:bg-brand-soft/40 hover:text-brand-deep',
+    'bg-white text-foreground/70 border-purple/15 hover:border-brand hover:bg-brand-soft hover:text-brand-deep',
   comprado:
-    'bg-celebrate/10 text-celebrate border-celebrate/30 font-semibold cursor-default',
+    'bg-celebrate/10 text-celebrate border-celebrate/40 font-bold cursor-default',
 }
 
 const selectedClasses: Record<Boleto['status'], string> = {
   disponible:
-    'bg-brand text-white border-brand shadow-md shadow-brand/30 scale-[1.08] font-semibold',
+    'bg-brand text-white border-brand shadow-md shadow-brand/40 scale-[1.08] font-black',
   comprado:
-    'bg-celebrate text-white border-celebrate shadow-md shadow-celebrate/30 scale-[1.08]',
+    'bg-celebrate text-white border-celebrate shadow-md shadow-celebrate/40 scale-[1.08]',
 }
 
 export function BoletosGrid({

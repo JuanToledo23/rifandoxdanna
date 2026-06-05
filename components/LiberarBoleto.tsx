@@ -80,12 +80,13 @@ export function LiberarBoleto({
   }
 
   return (
-    <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+    <section className="frame-cream rounded-3xl p-3">
+      <div className="rounded-2xl bg-white p-4 sm:p-5">
       <div className="mb-3 flex items-baseline justify-between gap-3">
-        <h2 className="font-display text-base font-bold sm:text-lg">
+        <h2 className="text-flyer-purple font-display text-xl font-black uppercase tracking-tight sm:text-2xl">
           Liberar boleto
         </h2>
-        <span className="text-[11px] text-muted-foreground">solo admin</span>
+        <span className="text-[11px] font-semibold uppercase tracking-wide text-purple-deep/70">solo admin</span>
       </div>
       <p className="mb-3 text-xs text-muted-foreground">
         Escribe el número de un boleto vendido para devolverlo a disponible.
@@ -112,7 +113,7 @@ export function LiberarBoleto({
         <Button
           type="submit"
           disabled={!valid || loading}
-          className="h-11 bg-brand text-white hover:bg-brand-deep disabled:bg-brand disabled:opacity-50"
+          className="btn-chunky h-11 rounded-xl bg-brand font-bold text-white hover:bg-brand-deep disabled:bg-brand disabled:opacity-50"
         >
           Liberar
         </Button>
@@ -167,6 +168,7 @@ export function LiberarBoleto({
           {feedback.message}
         </div>
       )}
+      </div>
     </section>
   )
 }

@@ -144,18 +144,18 @@ export default function VenderPage() {
         <div className="flex min-w-0 items-center gap-3">
           <div
             aria-hidden="true"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-soft font-display text-base font-bold text-brand-deep ring-1 ring-brand/20"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand font-display text-base font-black text-white shadow-sm shadow-brand/40"
           >
             {initials(session.name) || '💗'}
           </div>
           <div className="min-w-0">
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-brand-deep/80">
+            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-deep">
               {session.role === 'admin' ? 'Administrador' : 'Vendedor'}
             </p>
             <h1 className="font-display truncate text-lg font-bold leading-tight sm:text-xl">
               {session.name}
             </h1>
-            <p className="truncate text-xs text-muted-foreground">{session.email}</p>
+            <p className="truncate text-xs text-foreground/65">{session.email}</p>
           </div>
         </div>
         <Button
@@ -164,7 +164,7 @@ export default function VenderPage() {
           size="sm"
           onClick={onLogout}
           disabled={loggingOut}
-          className="shrink-0"
+          className="shrink-0 border-purple/30 font-semibold text-purple-deep hover:bg-purple-soft"
         >
           {loggingOut ? 'Saliendo…' : 'Salir'}
         </Button>
@@ -183,9 +183,12 @@ export default function VenderPage() {
         <section className="space-y-4">
           <StatsCards vendidos={vendidos} disponibles={disponibles} />
 
-          <div className="rounded-2xl border bg-card p-4 shadow-sm sm:p-5">
+          <div className="frame-purple rounded-3xl p-3">
+            <div className="rounded-2xl bg-white p-4 sm:p-5">
             <div className="mb-3 flex items-center justify-between gap-3">
-              <h2 className="font-display text-base font-bold sm:text-lg">Boletos</h2>
+              <h2 className="text-flyer-purple font-display text-xl font-black uppercase tracking-tight sm:text-2xl">
+                Boletos
+              </h2>
               <div className="flex items-center gap-3 text-[11px] text-muted-foreground sm:text-xs">
                 <span className="flex items-center gap-1.5">
                   <span className="inline-block h-2.5 w-2.5 rounded-full bg-white ring-1 ring-border" />
@@ -219,6 +222,7 @@ export default function VenderPage() {
                 onCellClick={handleCellClick}
               />
             )}
+            </div>
           </div>
 
           <p className="text-center text-[11px] text-muted-foreground">
@@ -228,14 +232,20 @@ export default function VenderPage() {
 
         <aside className="md:sticky md:top-6">
           {!selectedBoleto && (
-            <div className="hidden rounded-2xl border border-dashed bg-card/60 p-8 text-center md:block">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-soft text-2xl ring-1 ring-brand/20">
-                💗
+            <div className="hidden md:block">
+              <div className="frame-cream polaroid-tilt-c rounded-3xl p-3">
+                <div className="rounded-2xl bg-white p-8 text-center">
+                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-brand text-2xl text-white shadow-sm shadow-brand/40">
+                    💗
+                  </div>
+                  <p className="font-display text-base font-bold uppercase tracking-tight text-purple-deep">
+                    Selecciona un boleto
+                  </p>
+                  <p className="mt-1 text-sm text-foreground/70">
+                    Toca cualquier número del grid para venderlo o ver su info.
+                  </p>
+                </div>
               </div>
-              <p className="font-display text-base font-semibold">Selecciona un boleto</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Toca cualquier número del grid para venderlo o ver su información.
-              </p>
             </div>
           )}
 

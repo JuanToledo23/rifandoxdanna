@@ -44,16 +44,14 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-svh flex-col items-center justify-center px-4 py-10 sm:py-16">
       <div className="w-full max-w-sm">
-        <div className="rounded-3xl border border-border/80 bg-card/95 p-6 shadow-xl shadow-brand/5 backdrop-blur sm:p-8">
+        <div className="polaroid polaroid-tilt-c rounded-3xl p-6 backdrop-blur sm:p-8">
           <div className="mb-6 text-center">
-            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft text-3xl shadow-sm ring-1 ring-brand/20">
-              💗
-            </div>
-            <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              Rifemos por Danna
+            <div aria-hidden="true" className="mb-3 text-4xl">💗</div>
+            <h1 className="text-flyer font-display text-3xl font-black uppercase leading-tight sm:text-4xl">
+              Rifamos por Danna
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Entrada para vendedores autorizados
+            <p className="banner-cream mt-3 inline-block rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-wide">
+              Acceso para vendedores
             </p>
           </div>
 
@@ -89,7 +87,7 @@ export default function LoginPage() {
 
             <Button
               type="submit"
-              className="h-11 w-full bg-brand text-base font-semibold text-white shadow-sm shadow-brand/30 hover:bg-brand-deep disabled:bg-brand disabled:opacity-50"
+              className="btn-chunky h-12 w-full rounded-2xl bg-brand text-base font-bold text-white hover:bg-brand-deep disabled:bg-brand disabled:opacity-50"
               disabled={loading || !email || !password}
             >
               {loading ? 'Entrando…' : 'Entrar'}
@@ -106,7 +104,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground">
+        <p className="mt-6 text-center text-xs font-semibold uppercase tracking-wide text-purple-deep/70">
           Cada boleto suma para Danna 💗
         </p>
       </div>

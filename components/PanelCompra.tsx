@@ -170,7 +170,7 @@ export function PanelCompra({
             </Button>
             <Button
               type="submit"
-              className="h-11 flex-1 bg-brand text-white hover:bg-brand-deep disabled:bg-brand disabled:opacity-50"
+              className="btn-chunky h-11 flex-1 rounded-xl bg-brand font-bold text-white hover:bg-brand-deep disabled:bg-brand disabled:opacity-50"
               disabled={!canSubmit}
             >
               {loading ? 'Vendiendo…' : 'Confirmar venta'}

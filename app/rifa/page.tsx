@@ -34,9 +34,30 @@ const SORTEO_INSTAGRAM_URL = 'https://instagram.com/jandyy24'
 const SORTEO_FECHA = '26 de junio de 2026'
 
 const PREMIOS = [
-  { medal: '🥇', name: 'Licuadora Ninja', detail: 'Profesional con pantalla táctil' },
-  { medal: '🥈', name: 'Air Fryer Ninja Max XL', detail: '5.2L · Tecnología Max Crisp' },
-  { medal: '🥉', name: 'Audífonos Sony', detail: 'Carga rápida · larga duración' },
+  {
+    medal: '🥇',
+    name: 'Licuadora Ninja',
+    detail: 'Profesional con pantalla táctil',
+    frame: 'frame-yellow',
+    tilt: 'polaroid-tilt-l',
+    labelColor: 'text-brand-deep',
+  },
+  {
+    medal: '🥈',
+    name: 'Air Fryer Ninja Max XL',
+    detail: '5.2L · Tecnología Max Crisp',
+    frame: 'frame-cream',
+    tilt: 'polaroid-tilt-c',
+    labelColor: 'text-purple-deep',
+  },
+  {
+    medal: '🥉',
+    name: 'Audífonos Sony',
+    detail: 'Carga rápida · larga duración',
+    frame: 'frame-pink',
+    tilt: 'polaroid-tilt-r',
+    labelColor: 'text-brand-deep',
+  },
 ]
 
 function formatMxn(n: number): string {
@@ -144,85 +165,87 @@ export default function PublicaPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
-      <header className="mb-5 flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-brand-soft text-xl shadow-sm ring-1 ring-brand/20">
+      <header className="mb-4 flex flex-col items-center text-center sm:mb-6">
+        <span aria-hidden="true" className="mb-3 inline-flex items-center justify-center text-3xl sm:text-4xl">
           💗
         </span>
-        <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-brand-deep/80">
-            Rifa solidaria
-          </p>
-          <h1 className="font-display text-xl font-bold leading-tight sm:text-2xl">
-            Rifemos por Danna
-          </h1>
-        </div>
+        <h1 className="text-flyer font-display text-4xl font-black uppercase leading-[0.95] tracking-tight sm:text-6xl">
+          Rifamos por Danna
+        </h1>
+        <span aria-hidden="true" className="mt-2 text-2xl">💗</span>
       </header>
 
-      <p className="mb-6 max-w-2xl text-sm leading-relaxed text-foreground/80 sm:mb-8 sm:text-base">
-        Danna necesita equipo especializado para su recuperación.{' '}
-        <span className="font-medium text-foreground">Ayúdala con un boleto.</span>
-      </p>
+      <div className="mb-7 flex justify-center sm:mb-9">
+        <p className="banner-cream max-w-xl rounded-full px-5 py-2.5 text-center text-sm font-semibold uppercase tracking-wide sm:px-7 sm:py-3 sm:text-[15px]">
+          Danna necesita equipo especializado para su recuperación. ¡Ayúdala con un boleto!
+        </p>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.05fr_1.2fr] lg:gap-10">
         <section className="space-y-5">
-          <div className="rounded-3xl border bg-gradient-to-br from-brand-soft/70 via-card to-card p-5 shadow-sm sm:p-6">
+          <div className="frame-purple rounded-3xl p-3 polaroid-tilt-l">
+            <div className="rounded-2xl bg-white p-5 sm:p-6">
             <div className="flex items-baseline justify-between gap-3">
-              <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-brand-deep/80">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-deep">
                 Boletos vendidos
               </p>
-              <p className="text-xs text-muted-foreground">{pct}%</p>
+              <p className="text-xs font-semibold text-purple-deep/80">{pct}%</p>
             </div>
-            <p className="font-display mt-1 text-3xl font-bold leading-none text-brand-deep sm:text-4xl">
-              {vendidos}<span className="text-foreground/40"> / {TOTAL}</span>
+            <p className="font-display mt-1 text-3xl font-black leading-none text-brand-deep sm:text-4xl">
+              {vendidos}<span className="text-purple/50"> / {TOTAL}</span>
             </p>
 
             <div
-              className="mt-4 h-3 w-full overflow-hidden rounded-full bg-white/70 shadow-inner"
+              className="mt-4 h-3 w-full overflow-hidden rounded-full bg-white/70 shadow-inner ring-1 ring-purple/15"
               role="progressbar"
               aria-valuenow={vendidos}
               aria-valuemin={0}
               aria-valuemax={TOTAL}
             >
               <div
-                className="h-full rounded-full bg-gradient-to-r from-brand to-brand-deep transition-all duration-700"
+                className="h-full rounded-full bg-gradient-to-r from-brand via-brand-deep to-purple transition-all duration-700"
                 style={{ width: `${(vendidos / TOTAL) * 100}%` }}
               />
             </div>
 
-            <p className="mt-3 text-sm text-muted-foreground">
-              <span className="font-semibold text-celebrate">{vendidos}</span> vendidos ·{' '}
-              <span className="font-semibold text-foreground">{disponibles}</span> disponibles
+            <p className="mt-3 text-sm text-foreground/75">
+              <span className="font-bold text-celebrate">{vendidos}</span> vendidos ·{' '}
+              <span className="font-bold text-foreground">{disponibles}</span> disponibles
             </p>
+            </div>
           </div>
 
-          <div className="rounded-2xl border bg-card/80 p-5 sm:p-6">
-            <div className="mb-4 flex items-baseline justify-between gap-3">
-              <h2 className="font-display text-base font-bold sm:text-lg">Premios</h2>
-              <span className="text-[11px] text-muted-foreground">{PREMIOS.length} ganadores</span>
-            </div>
-            <ul className="space-y-2.5">
+          <div>
+            <h2 className="text-flyer-purple font-display mb-5 text-center text-3xl font-black uppercase sm:text-4xl">
+              Premios
+            </h2>
+            <ul className="grid gap-5 sm:grid-cols-3 lg:grid-cols-1">
               {PREMIOS.map((p) => (
-                <li
-                  key={p.name}
-                  className="flex items-start gap-3 rounded-xl border border-border/70 bg-background/40 p-3"
-                >
-                  <span className="text-2xl leading-none" aria-hidden="true">
-                    {p.medal}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="font-display font-semibold leading-tight">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">{p.detail}</p>
+                <li key={p.name} className={`rounded-2xl p-3 pb-4 ${p.frame} ${p.tilt}`}>
+                  <div className="flex items-center gap-3 rounded-xl bg-white px-4 py-5 shadow-inner">
+                    <span className="text-4xl leading-none" aria-hidden="true">
+                      {p.medal}
+                    </span>
+                    <div className="min-w-0">
+                      <p className={`font-display text-base font-black uppercase tracking-tight sm:text-lg ${p.labelColor}`}>
+                        {p.name}
+                      </p>
+                      <p className="mt-0.5 text-xs text-foreground/65 sm:text-sm">{p.detail}</p>
+                    </div>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded-2xl border bg-card/80 p-5 sm:p-6">
-            <h2 className="font-display text-base font-bold sm:text-lg">Cómo participar</h2>
+          <div className="frame-cream polaroid-tilt-c rounded-3xl p-3">
+            <div className="rounded-2xl bg-white p-5 sm:p-6">
+              <h2 className="text-flyer-purple font-display text-2xl font-black uppercase tracking-tight sm:text-3xl">
+                Cómo participar
+              </h2>
             <ol className="mt-3 space-y-3 text-sm">
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-soft text-xs font-bold text-brand-deep">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-black text-white shadow-sm shadow-brand/40">
                   1
                 </span>
                 <span className="leading-relaxed text-foreground/85">
@@ -230,7 +253,7 @@ export default function PublicaPage() {
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-soft text-xs font-bold text-brand-deep">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple text-xs font-black text-white shadow-sm shadow-purple/40">
                   2
                 </span>
                 <div className="min-w-0 flex-1">
@@ -264,7 +287,7 @@ export default function PublicaPage() {
                 </div>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-soft text-xs font-bold text-brand-deep">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-black text-white shadow-sm shadow-brand/40">
                   3
                 </span>
                 <span className="leading-relaxed text-foreground/85">
@@ -272,7 +295,7 @@ export default function PublicaPage() {
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-celebrate/20 text-xs font-bold text-celebrate">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-celebrate text-xs font-black text-white shadow-sm shadow-celebrate/40">
                   ✓
                 </span>
                 <span className="leading-relaxed text-foreground/85">
@@ -285,7 +308,7 @@ export default function PublicaPage() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group mt-5 inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-[#25D366] px-5 py-3.5 text-base font-semibold text-white shadow-sm shadow-emerald-500/30 transition hover:bg-[#1ebe57] active:scale-[0.98]"
+              className="btn-chunky group mt-5 inline-flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[#25D366] px-5 py-3.5 text-base font-bold text-white transition hover:bg-[#1ebe57]"
             >
               <svg
                 aria-hidden="true"
@@ -301,34 +324,41 @@ export default function PublicaPage() {
             <p className="mt-2 text-center text-[11px] text-muted-foreground">
               Respuesta rápida · {WHATSAPP_DISPLAY}
             </p>
+            </div>
           </div>
 
-          <div className="rounded-2xl border border-brand/20 bg-gradient-to-br from-brand-soft/50 via-card to-card p-5 sm:p-6">
+          <div className="frame-purple polaroid-tilt-r rounded-3xl p-3">
+            <div className="rounded-2xl bg-white p-5 sm:p-6">
             <div className="flex items-start gap-3">
               <span aria-hidden="true" className="text-2xl">📅</span>
               <div className="min-w-0">
-                <p className="font-display font-semibold leading-tight">Sorteo en vivo</p>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="font-display text-base font-bold uppercase tracking-tight text-purple-deep">
+                  Sorteo en vivo
+                </p>
+                <p className="mt-1 text-sm text-foreground/75">
                   Por Instagram en{' '}
                   <a
                     href={SORTEO_INSTAGRAM_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-brand-deep underline-offset-2 hover:underline"
+                    className="font-semibold text-purple underline-offset-2 hover:underline"
                   >
                     {SORTEO_INSTAGRAM}
                   </a>
                 </p>
-                <p className="text-sm font-medium text-foreground">{SORTEO_FECHA}</p>
+                <p className="text-sm font-semibold text-foreground">{SORTEO_FECHA}</p>
               </div>
+            </div>
             </div>
           </div>
         </section>
 
         <section>
           <div className="mb-3 flex items-center justify-between gap-3 px-1">
-            <h2 className="font-display text-lg font-bold sm:text-xl">Boletos</h2>
-            <div className="flex items-center gap-3 text-[11px] text-muted-foreground sm:text-xs">
+            <h2 className="text-flyer-purple font-display text-2xl font-black uppercase tracking-tight sm:text-3xl">
+              Boletos
+            </h2>
+            <div className="flex items-center gap-3 text-[11px] text-foreground/70 sm:text-xs">
               <span className="flex items-center gap-1.5">
                 <span className="inline-block h-2.5 w-2.5 rounded-full bg-white ring-1 ring-border" />
                 Libre
@@ -340,7 +370,8 @@ export default function PublicaPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border bg-card/60 p-3 shadow-sm sm:p-4">
+          <div className="frame-purple rounded-3xl p-3">
+            <div className="rounded-2xl bg-white p-3 sm:p-4">
             {loading ? (
               <div className="px-4 py-16 text-center text-sm text-muted-foreground">
                 Cargando boletos…
@@ -353,6 +384,7 @@ export default function PublicaPage() {
                 onCellTouch={handleTouch}
               />
             )}
+            </div>
           </div>
         </section>
       </div>

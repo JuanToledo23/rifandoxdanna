@@ -47,32 +47,39 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Brand palette extraída del flyer */
   --color-brand: #EC4899;
   --color-brand-soft: #FCE7F3;
   --color-brand-deep: #BE185D;
-  --color-cream: #FFF6FA;
+  --color-purple: #7C3AED;
+  --color-purple-deep: #5B21B6;
+  --color-purple-soft: #E8DDF5;
+  --color-cream-banner: #FFEBC9;
+  --color-cream-border: #F2D8A2;
+  --color-sunny: #FFCB66;
   --color-celebrate: #16A34A;
 }
 
 :root {
-  --background: oklch(0.985 0.01 350);
-  --foreground: oklch(0.22 0.025 340);
+  --background: oklch(0.95 0.025 295);
+  --foreground: oklch(0.22 0.05 295);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.02 340);
+  --card-foreground: oklch(0.2 0.04 295);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.02 340);
-  --primary: oklch(0.65 0.21 0);
+  --popover-foreground: oklch(0.2 0.04 295);
+  --primary: oklch(0.5 0.22 300);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.96 0.012 340);
-  --secondary-foreground: oklch(0.25 0.02 340);
-  --muted: oklch(0.96 0.01 340);
-  --muted-foreground: oklch(0.5 0.02 340);
-  --accent: oklch(0.95 0.018 340);
-  --accent-foreground: oklch(0.25 0.02 340);
+  --secondary: oklch(0.94 0.025 300);
+  --secondary-foreground: oklch(0.25 0.04 300);
+  --muted: oklch(0.94 0.02 300);
+  --muted-foreground: oklch(0.48 0.04 300);
+  --accent: oklch(0.93 0.03 300);
+  --accent-foreground: oklch(0.25 0.04 300);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.91 0.015 340);
-  --input: oklch(0.91 0.015 340);
-  --ring: oklch(0.7 0.18 350);
+  --border: oklch(0.88 0.03 300);
+  --input: oklch(0.9 0.025 300);
+  --ring: oklch(0.6 0.22 305);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -131,8 +138,10 @@
   body {
     @apply bg-background text-foreground antialiased;
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in oklch, var(--color-brand-soft) 60%, transparent), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 90% 100%, color-mix(in oklch, var(--color-brand-soft) 35%, transparent), transparent 70%);
+      radial-gradient(ellipse 60% 40% at 12% 5%, color-mix(in oklch, var(--color-brand-soft) 70%, transparent), transparent 65%),
+      radial-gradient(ellipse 50% 35% at 95% 10%, color-mix(in oklch, var(--color-sunny) 35%, transparent), transparent 70%),
+      radial-gradient(ellipse 65% 45% at 90% 100%, color-mix(in oklch, var(--color-purple-soft) 60%, transparent), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 8% 95%, color-mix(in oklch, var(--color-cream-banner) 50%, transparent), transparent 70%);
     background-attachment: fixed;
   }
   html {
@@ -146,6 +155,101 @@
     font-feature-settings: 'ss01';
     letter-spacing: -0.02em;
   }
+
+  /* Hero title con outline blanco + sombra morada (estilo flyer) */
+  .text-flyer {
+    color: var(--color-brand);
+    -webkit-text-stroke: 1.5px white;
+    paint-order: stroke fill;
+    text-shadow:
+      0 2px 0 color-mix(in oklch, var(--color-purple) 35%, transparent),
+      0 6px 14px rgba(124, 58, 237, 0.18);
+  }
+  .text-flyer-purple {
+    color: var(--color-purple);
+    -webkit-text-stroke: 1.5px white;
+    paint-order: stroke fill;
+    text-shadow:
+      0 2px 0 color-mix(in oklch, var(--color-brand) 25%, transparent),
+      0 6px 14px rgba(124, 58, 237, 0.15);
+  }
+
+  /* Banner crema tipo pastilla (como "DANNA NECESITA...") */
+  .banner-cream {
+    background: var(--color-cream-banner);
+    border: 2px solid var(--color-cream-border);
+    color: #6B4A1A;
+  }
+
+  /* Card estilo polaroid — frame coloreado + interior blanco */
+  .polaroid {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 14px 35px -12px rgba(124, 58, 237, 0.32),
+      0 5px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .polaroid:hover {
+    transform: translateY(-3px) rotate(0deg) scale(1.015) !important;
+    box-shadow:
+      0 22px 50px -14px rgba(124, 58, 237, 0.4),
+      0 8px 18px rgba(0, 0, 0, 0.08);
+  }
+  .polaroid-tilt-l { transform: rotate(-1.8deg); }
+  .polaroid-tilt-r { transform: rotate(1.5deg); }
+  .polaroid-tilt-c { transform: rotate(-0.6deg); }
+
+  /* Frames de polaroid coloreados (estilo flyer) */
+  .frame-yellow {
+    background: var(--color-sunny);
+    border: 2px solid #E8AF38;
+    box-shadow:
+      0 14px 35px -12px rgba(124, 58, 237, 0.35),
+      0 5px 14px rgba(0, 0, 0, 0.08);
+  }
+  .frame-cream {
+    background: var(--color-cream-banner);
+    border: 2px solid var(--color-cream-border);
+    box-shadow:
+      0 14px 35px -12px rgba(124, 58, 237, 0.35),
+      0 5px 14px rgba(0, 0, 0, 0.08);
+  }
+  .frame-pink {
+    background: color-mix(in oklch, var(--color-brand-soft) 80%, white);
+    border: 2px solid color-mix(in oklch, var(--color-brand) 40%, white);
+    box-shadow:
+      0 14px 35px -12px rgba(236, 72, 153, 0.3),
+      0 5px 14px rgba(0, 0, 0, 0.08);
+  }
+  .frame-purple {
+    background: color-mix(in oklch, var(--color-purple-soft) 70%, white);
+    border: 2px solid color-mix(in oklch, var(--color-purple) 30%, white);
+    box-shadow:
+      0 14px 35px -12px rgba(124, 58, 237, 0.35),
+      0 5px 14px rgba(0, 0, 0, 0.08);
+  }
+  .frame-yellow, .frame-cream, .frame-pink, .frame-purple {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .frame-yellow:hover, .frame-cream:hover, .frame-pink:hover, .frame-purple:hover {
+    transform: translateY(-3px) rotate(0deg) scale(1.015) !important;
+  }
+
+  /* CTA chunky tipo botón sticker */
+  .btn-chunky {
+    box-shadow:
+      0 4px 0 0 color-mix(in oklch, currentColor 35%, black),
+      0 6px 14px -4px rgba(0, 0, 0, 0.18);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .btn-chunky:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 2px 0 0 color-mix(in oklch, currentColor 35%, black),
+      0 4px 8px -4px rgba(0, 0, 0, 0.18);
+  }
+
   .ticket-cell {
     -webkit-tap-highlight-color: transparent;
   }
