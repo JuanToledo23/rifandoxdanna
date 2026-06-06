@@ -468,7 +468,22 @@ export default function PublicaPage() {
               <p className="mt-1 text-xs text-foreground/70">
                 <span className="font-semibold text-foreground">{BANK_NAME}</span> · {BANK_HOLDER}
               </p>
-              <p className="mt-0.5 font-mono text-xs text-foreground/70">CLABE: {BANK_CLABE}</p>
+              <div className="mt-2">
+                <p className="text-[11px] uppercase tracking-wide text-muted-foreground">CLABE</p>
+                <div className="mt-0.5 flex items-center gap-2">
+                  <code className="flex-1 truncate rounded-md bg-muted px-2 py-1.5 font-mono text-xs">
+                    {BANK_CLABE}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={copyClabe}
+                    className="shrink-0 rounded-md border border-brand/30 bg-brand-soft px-2.5 py-1.5 text-xs font-semibold text-brand-deep transition hover:bg-brand/15 active:scale-95"
+                    aria-label="Copiar CLABE"
+                  >
+                    {clabeCopied ? '✓ Copiado' : 'Copiar'}
+                  </button>
+                </div>
+              </div>
               <p className="mt-3 text-xs text-foreground/75">
                 Al continuar abrimos WhatsApp con tu mensaje listo. Solo tendrás que{' '}
                 <span className="font-semibold text-foreground">adjuntar tu comprobante</span> y enviar.
