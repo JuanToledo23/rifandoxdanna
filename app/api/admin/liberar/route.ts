@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   }
 
   const numero = typeof body.numero === 'number' ? body.numero : Number(body.numero)
-  if (!Number.isInteger(numero) || numero < 1 || numero > 300) {
+  if (!Number.isInteger(numero) || numero < 1 || numero > 350) {
     return NextResponse.json({ error: 'Número inválido' }, { status: 400 })
   }
 

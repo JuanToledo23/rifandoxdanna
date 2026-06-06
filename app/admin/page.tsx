@@ -11,7 +11,7 @@ import { getSession } from '@/lib/auth/get-session'
 import { clearSession } from '@/lib/auth/set-session'
 import type { Session } from '@/lib/types'
 
-const TOTAL = 300
+const TOTAL = 350
 const PRECIO = 100
 const GOAL_MXN = 23000
 

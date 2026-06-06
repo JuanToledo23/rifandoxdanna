@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     typeof body.comprador_nombre === 'string' ? body.comprador_nombre.trim() : ''
   const tel = typeof body.comprador_tel === 'string' ? body.comprador_tel.trim() : ''
 
-  if (!Number.isInteger(numero) || numero < 1 || numero > 300) {
+  if (!Number.isInteger(numero) || numero < 1 || numero > 350) {
     return NextResponse.json({ error: 'Número inválido' }, { status: 400 })
   }
   if (nombre.length < 2) {

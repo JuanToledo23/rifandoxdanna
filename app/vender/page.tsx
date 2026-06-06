@@ -13,7 +13,7 @@ import { getSession } from '@/lib/auth/get-session'
 import { supabase } from '@/lib/supabase/client'
 import type { Boleto, Session } from '@/lib/types'
 
-const TOTAL = 300
+const TOTAL = 350
 const PRECIO = 100
 
 function initials(name: string): string {

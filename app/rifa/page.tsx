@@ -1,10 +1,15 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import Image, { type StaticImageData } from 'next/image'
 
 import { BoletosGrid } from '@/components/BoletosGrid'
 import { supabase } from '@/lib/supabase/client'
 import type { Boleto } from '@/lib/types'
+
+import licuadoraImg from '@/public/premios/licuadora.webp'
+import airFryerImg from '@/public/premios/air-fryer.webp'
+import audifonosImg from '@/public/premios/audifonos.jpg'
 
 interface TooltipState {
   visible: boolean
@@ -18,7 +23,7 @@ interface ToastState {
   content: string
 }
 
-const TOTAL = 300
+const TOTAL = 350
 const PRECIO = 100
 const WHATSAPP_PHONE = '525533326744'
 const WHATSAPP_DISPLAY = '55 3332 6744'
@@ -39,7 +44,15 @@ const SORTEO_INSTAGRAM = '@jandyy24'
 const SORTEO_INSTAGRAM_URL = 'https://instagram.com/jandyy24'
 const SORTEO_FECHA = '26 de junio de 2026 · 6:00 PM'
 
-const PREMIOS = [
+const PREMIOS: Array<{
+  medal: string
+  name: string
+  detail: string
+  frame: string
+  tilt: string
+  labelColor: string
+  image: StaticImageData
+}> = [
   {
     medal: '🥇',
     name: 'Licuadora Ninja',
@@ -47,6 +60,7 @@ const PREMIOS = [
     frame: 'frame-yellow',
     tilt: 'polaroid-tilt-l',
     labelColor: 'text-brand-deep',
+    image: licuadoraImg,
   },
   {
     medal: '🥈',
@@ -55,6 +69,7 @@ const PREMIOS = [
     frame: 'frame-cream',
     tilt: 'polaroid-tilt-c',
     labelColor: 'text-purple-deep',
+    image: airFryerImg,
   },
   {
     medal: '🥉',
@@ -63,6 +78,7 @@ const PREMIOS = [
     frame: 'frame-pink',
     tilt: 'polaroid-tilt-r',
     labelColor: 'text-brand-deep',
+    image: audifonosImg,
   },
 ]
 
@@ -244,15 +260,27 @@ export default function PublicaPage() {
             <ul className="grid gap-5 sm:grid-cols-3 lg:grid-cols-1">
               {PREMIOS.map((p) => (
                 <li key={p.name} className={`rounded-2xl p-3 pb-4 ${p.frame} ${p.tilt}`}>
-                  <div className="flex items-center gap-3 rounded-xl bg-white px-4 py-5 shadow-inner">
-                    <span className="text-4xl leading-none" aria-hidden="true">
-                      {p.medal}
-                    </span>
-                    <div className="min-w-0">
-                      <p className={`font-display text-base font-black uppercase tracking-tight sm:text-lg ${p.labelColor}`}>
-                        {p.name}
-                      </p>
-                      <p className="mt-0.5 text-xs text-foreground/65 sm:text-sm">{p.detail}</p>
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+                    <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-white shadow-inner lg:w-32 lg:shrink-0">
+                      <Image
+                        src={p.image}
+                        alt={p.name}
+                        fill
+                        sizes="(min-width: 1024px) 8rem, (min-width: 640px) 33vw, 100vw"
+                        className="object-contain p-2"
+                        placeholder="blur"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1 px-1">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-2xl leading-none" aria-hidden="true">
+                          {p.medal}
+                        </span>
+                        <p className={`font-display text-base font-black uppercase leading-tight tracking-tight sm:text-lg ${p.labelColor}`}>
+                          {p.name}
+                        </p>
+                      </div>
+                      <p className="mt-1 text-xs text-foreground/70 sm:text-sm">{p.detail}</p>
                     </div>
                   </div>
                 </li>
