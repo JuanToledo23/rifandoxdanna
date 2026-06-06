@@ -202,12 +202,11 @@ ON CONFLICT (numero) DO NOTHING;
 -- Contraseñas generadas con bcrypt rounds=10
 -- IMPORTANTE: Reemplazar los hashes con los generados por el script de seed
 
--- Para generar: node -e "const b=require('bcryptjs'); console.log(b.hashSync('DANA-11',10))"
+-- Para generar: node -e "const b=require('bcryptjs'); console.log(b.hashSync('TU-PASSWORD',10))"
+-- Las credenciales reales se mantienen en scripts/vendors.local.json (gitignored).
 INSERT INTO vendedores (email, password_hash, name, role) VALUES
-  ('admin@rifadana.com', '<hash de ADMIN-99>', 'Admin', 'admin'),
-  ('ana@gmail.com',      '<hash de DANA-11>',  'Ana',   'vendedor'),
-  ('luis@gmail.com',     '<hash de DANA-22>',  'Luis',  'vendedor'),
-  ('karina@gmail.com',   '<hash de DANA-33>',  'Karina','vendedor');
+  ('admin@example.com',    '<bcrypt-hash>', 'Admin',       'admin'),
+  ('vendedor1@example.com', '<bcrypt-hash>', 'Vendedor 1', 'vendedor');
 ```
 
 > Claude Code debe crear un script `scripts/generate-hashes.ts` que genere los hashes reales antes de correr esta migración.
@@ -617,17 +616,13 @@ export interface Session {
 ```ts
 // scripts/generate-hashes.ts
 // Ejecutar: npx tsx scripts/generate-hashes.ts
+// Lee las credenciales desde scripts/vendors.local.json (gitignored).
+// Ver scripts/vendors.example.json para el formato.
 
 import bcrypt from 'bcryptjs'
+import { loadVendors } from './_load-vendors'
 
-const vendors = [
-  { email: 'admin@rifadana.com', password: 'ADMIN-99', name: 'Admin',  role: 'admin' },
-  { email: 'ana@gmail.com',      password: 'DANA-11',  name: 'Ana',    role: 'vendedor' },
-  { email: 'luis@gmail.com',     password: 'DANA-22',  name: 'Luis',   role: 'vendedor' },
-  { email: 'karina@gmail.com',   password: 'DANA-33',  name: 'Karina', role: 'vendedor' },
-]
-
-for (const v of vendors) {
+for (const v of loadVendors()) {
   const hash = bcrypt.hashSync(v.password, 10)
   console.log(`('${v.email}', '${hash}', '${v.password}', '${v.name}', '${v.role}'),`)
 }

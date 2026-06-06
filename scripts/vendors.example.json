@@ -1,0 +1,17 @@
+{
+  "_comment": "Copia este archivo a scripts/vendors.local.json y rellena con credenciales reales. vendors.local.json está en .gitignore.",
+  "vendors": [
+    {
+      "email": "admin@example.com",
+      "password": "REPLACE_ME",
+      "name": "Admin",
+      "role": "admin"
+    },
+    {
+      "email": "vendedor1@example.com",
+      "password": "REPLACE_ME",
+      "name": "Nombre Vendedor",
+      "role": "vendedor"
+    }
+  ]
+}

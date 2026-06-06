@@ -1,23 +1,7 @@
-import { readFileSync } from 'node:fs'
 import bcrypt from 'bcryptjs'
 import { createClient } from '@supabase/supabase-js'
 
-function loadEnvLocal() {
-  try {
-    const raw = readFileSync('.env.local', 'utf8')
-    for (const line of raw.split('\n')) {
-      const trimmed = line.trim()
-      if (!trimmed || trimmed.startsWith('#')) continue
-      const idx = trimmed.indexOf('=')
-      if (idx === -1) continue
-      const key = trimmed.slice(0, idx).trim()
-      const value = trimmed.slice(idx + 1).trim().replace(/^['"]|['"]$/g, '')
-      if (!process.env[key]) process.env[key] = value
-    }
-  } catch {
-    // .env.local missing is fine if vars are already in environment
-  }
-}
+import { loadEnvLocal, loadVendors } from './_load-vendors'
 
 loadEnvLocal()
 
@@ -30,11 +14,7 @@ if (!url || !serviceKey) {
 }
 
 const supabase = createClient(url, serviceKey)
-
-const vendors = [
-  { email: 'admin@rifadana.com',    password: 'ADMIN-99', name: 'Admin',       role: 'admin' as const },
-  { email: 'johntoledot@gmail.com', password: 'DANNA-1',  name: 'Juan Toledo', role: 'vendedor' as const },
-]
+const vendors = loadVendors()
 
 async function main() {
   console.log('→ 1/3 Reseteando los 300 boletos a "disponible"…')
@@ -59,7 +39,7 @@ async function main() {
   if (delErr) throw delErr
   console.log('  ✓ vendedores borrados')
 
-  console.log('→ 3/3 Insertando vendedores nuevos…')
+  console.log(`→ 3/3 Insertando ${vendors.length} vendedores desde scripts/vendors.local.json…`)
   const rows = vendors.map((v) => ({
     email: v.email,
     password_hash: bcrypt.hashSync(v.password, 10),
@@ -69,8 +49,8 @@ async function main() {
   }))
   const { error: insErr } = await supabase.from('vendedores').insert(rows)
   if (insErr) throw insErr
-  console.log(`  ✓ ${rows.length} vendedores insertados:`)
-  for (const v of vendors) console.log(`    · ${v.email} (${v.role}) — ${v.password}`)
+  console.log(`  ✓ ${rows.length} vendedores insertados`)
+  for (const v of vendors) console.log(`    · ${v.email} (${v.role})`)
 
   const { count: boletosCount } = await supabase
     .from('boletos')
