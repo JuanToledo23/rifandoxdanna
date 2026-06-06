@@ -33,7 +33,7 @@ const supabase = createClient(url, serviceKey)
 
 const vendors = [
   { email: 'admin@rifadana.com',    password: 'ADMIN-99', name: 'Admin',       role: 'admin' as const },
-  { email: 'johntoledot@gmail.com', password: 'DANA-1',   name: 'Juan Toledo', role: 'vendedor' as const },
+  { email: 'johntoledot@gmail.com', password: 'DANNA-1',  name: 'Juan Toledo', role: 'vendedor' as const },
 ]
 
 async function main() {

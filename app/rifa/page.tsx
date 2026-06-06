@@ -22,8 +22,14 @@ const TOTAL = 300
 const PRECIO = 100
 const WHATSAPP_PHONE = '525533326744'
 const WHATSAPP_DISPLAY = '55 3332 6744'
-const WHATSAPP_MSG = 'Hola! Ya hice la transferencia de $100 para la rifa por Danna ❤️ Aquí va mi comprobante y el número que aparté.'
+const WHATSAPP_MSG = 'Hola! Ya hice la transferencia de $100 para la rifa por Danna. Aquí va mi comprobante y el número que aparté.'
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_MSG)}`
+
+function buildWhatsAppUrlForNumero(numero: number): string {
+  const padded = String(numero).padStart(3, '0')
+  const msg = `Hola! Quiero apartar el boleto #${padded} de la rifa por Danna. Adjunto mi comprobante de la transferencia de $100.`
+  return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`
+}
 
 const BANK_NAME = 'Banamex'
 const BANK_HOLDER = 'Andrea Estrada Bustos'
@@ -31,7 +37,7 @@ const BANK_CLABE = '002180701832645494'
 
 const SORTEO_INSTAGRAM = '@jandyy24'
 const SORTEO_INSTAGRAM_URL = 'https://instagram.com/jandyy24'
-const SORTEO_FECHA = '26 de junio de 2026'
+const SORTEO_FECHA = '26 de junio de 2026 · 6:00 PM'
 
 const PREMIOS = [
   {
@@ -96,6 +102,15 @@ export default function PublicaPage() {
   })
   const [toast, setToast] = useState<ToastState>({ visible: false, content: '' })
   const [clabeCopied, setClabeCopied] = useState(false)
+  const [selectedNumero, setSelectedNumero] = useState<number | null>(null)
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setSelectedNumero(null)
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [])
 
   async function copyClabe() {
     try {
@@ -159,20 +174,27 @@ export default function PublicaPage() {
   }
 
   function handleTouch(b: Boleto) {
+    // Solo mostrar toast con nombre para boletos comprados — los disponibles
+    // abren el modal vía onCellClick.
+    if (b.status !== 'comprado') return
     setToast({ visible: true, content: `#${String(b.numero).padStart(3, '0')} · ${formatComprador(b)}` })
     window.setTimeout(() => setToast({ visible: false, content: '' }), 2000)
+  }
+
+  function handleCellClick(b: Boleto) {
+    if (b.status !== 'disponible') return
+    setSelectedNumero(b.numero)
   }
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
       <header className="mb-4 flex flex-col items-center text-center sm:mb-6">
-        <span aria-hidden="true" className="mb-3 inline-flex items-center justify-center text-3xl sm:text-4xl">
-          💗
+        <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-brand-deep ring-1 ring-brand/25 sm:text-[11px]">
+          <span aria-hidden="true">💗</span>
         </span>
         <h1 className="text-flyer font-display text-4xl font-black uppercase leading-[0.95] tracking-tight sm:text-6xl">
           Rifamos por Danna
         </h1>
-        <span aria-hidden="true" className="mt-2 text-2xl">💗</span>
       </header>
 
       <div className="mb-7 flex justify-center sm:mb-9">
@@ -379,6 +401,8 @@ export default function PublicaPage() {
             ) : (
               <BoletosGrid
                 boletos={boletos}
+                interactive
+                onCellClick={handleCellClick}
                 onCellHover={handleHover}
                 onCellLeave={handleLeave}
                 onCellTouch={handleTouch}
@@ -409,6 +433,72 @@ export default function PublicaPage() {
         >
           {toast.content}
         </div>
+      )}
+
+      {selectedNumero != null && (
+        <>
+          <div
+            role="presentation"
+            aria-hidden="true"
+            onClick={() => setSelectedNumero(null)}
+            className="fixed inset-0 z-40 bg-black/45 backdrop-blur-sm"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Apartar boleto ${String(selectedNumero).padStart(3, '0')}`}
+            className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl border-t bg-card p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:w-[min(28rem,calc(100vw-2rem))] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-3xl md:border md:p-7 md:pb-7 md:shadow-xl"
+          >
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-border md:hidden" />
+
+            <div className="flex flex-col items-center gap-2 pt-1">
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-deep">
+                Apartar boleto
+              </span>
+              <span
+                aria-label={`Boleto ${String(selectedNumero).padStart(3, '0')}`}
+                className="font-display rounded-full bg-brand-soft px-6 py-2 text-3xl font-black text-brand-deep shadow-sm ring-1 ring-brand/25"
+              >
+                #{String(selectedNumero).padStart(3, '0')}
+              </span>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-border/70 bg-background/50 p-4 text-sm leading-relaxed">
+              <p className="font-medium text-foreground">¿Ya transferiste {formatMxn(PRECIO)}?</p>
+              <p className="mt-1 text-xs text-foreground/70">
+                <span className="font-semibold text-foreground">{BANK_NAME}</span> · {BANK_HOLDER}
+              </p>
+              <p className="mt-0.5 font-mono text-xs text-foreground/70">CLABE: {BANK_CLABE}</p>
+              <p className="mt-3 text-xs text-foreground/75">
+                Al continuar abrimos WhatsApp con tu mensaje listo. Solo tendrás que{' '}
+                <span className="font-semibold text-foreground">adjuntar tu comprobante</span> y enviar.
+              </p>
+            </div>
+
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedNumero(null)}
+                className="h-11 flex-1 rounded-xl text-sm font-semibold text-foreground/70 hover:bg-muted"
+              >
+                Cancelar
+              </button>
+              <a
+                href={buildWhatsAppUrlForNumero(selectedNumero)}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setSelectedNumero(null)}
+                className="btn-chunky group inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#25D366] px-3 text-sm font-bold text-white hover:bg-[#1ebe57]"
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413" />
+                </svg>
+                Abrir WhatsApp
+                <span aria-hidden="true" className="transition group-hover:translate-x-0.5">→</span>
+              </a>
+            </div>
+          </div>
+        </>
       )}
     </main>
   )
