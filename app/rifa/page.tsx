@@ -17,13 +17,6 @@ import licuadoraImg from '@/public/premios/licuadora.webp'
 import airFryerImg from '@/public/premios/air-fryer.webp'
 import audifonosImg from '@/public/premios/audifonos.jpg'
 
-interface TooltipState {
-  visible: boolean
-  x: number
-  y: number
-  content: string
-}
-
 interface ToastState {
   visible: boolean
   content: string
@@ -116,16 +109,10 @@ function formatComprador(b: Boleto): string {
 export default function PublicaPage() {
   const [boletos, setBoletos] = useState<Boleto[]>([])
   const [loading, setLoading] = useState(true)
-  const [tooltip, setTooltip] = useState<TooltipState>({
-    visible: false,
-    x: 0,
-    y: 0,
-    content: '',
-  })
   const [toast, setToast] = useState<ToastState>({ visible: false, content: '' })
   const [clabeCopied, setClabeCopied] = useState(false)
   const [selectedNumero, setSelectedNumero] = useState<number | null>(null)
-  const lastSoldInspectRef = useRef<number | null>(null)
+  const toastTimerRef = useRef<number | null>(null)
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -196,31 +183,26 @@ export default function PublicaPage() {
     return { vendidos: v, disponibles: d, pct: p }
   }, [boletos])
 
-  function handleHover(b: Boleto, x: number, y: number) {
-    setTooltip({ visible: true, x, y, content: formatComprador(b) })
-    if (b.status === 'comprado' && lastSoldInspectRef.current !== b.numero) {
-      lastSoldInspectRef.current = b.numero
-      posthog.capture('boleto_sold_inspect', { numero: b.numero, device: 'desktop' })
-    }
-  }
-
-  function handleLeave() {
-    setTooltip((t) => ({ ...t, visible: false }))
-    lastSoldInspectRef.current = null
-  }
-
-  function handleTouch(b: Boleto) {
-    // Solo mostrar toast con nombre para boletos comprados — los disponibles
-    // abren el modal vía onCellClick.
-    if (b.status !== 'comprado') return
-    setToast({ visible: true, content: `#${String(b.numero).padStart(3, '0')} · ${formatComprador(b)}` })
-    posthog.capture('boleto_sold_inspect', { numero: b.numero, device: 'mobile' })
-    window.setTimeout(() => setToast({ visible: false, content: '' }), 2000)
+  function showSoldToast(b: Boleto) {
+    if (toastTimerRef.current != null) window.clearTimeout(toastTimerRef.current)
+    setToast({
+      visible: true,
+      content: `#${String(b.numero).padStart(3, '0')} · ${formatComprador(b)}`,
+    })
+    toastTimerRef.current = window.setTimeout(() => {
+      setToast({ visible: false, content: '' })
+      toastTimerRef.current = null
+    }, 2000)
   }
 
   function handleCellClick(b: Boleto) {
-    if (b.status !== 'disponible') return
     const device = getDevice()
+    if (b.status === 'comprado') {
+      showSoldToast(b)
+      posthog.capture('boleto_sold_inspect', { numero: b.numero, device })
+      return
+    }
+    if (b.status !== 'disponible') return
     posthog.capture('boleto_available_click', { numero: b.numero, device })
     posthog.capture('apartar_modal_opened', { numero: b.numero })
     setSelectedNumero(b.numero)
@@ -456,9 +438,6 @@ export default function PublicaPage() {
                 boletos={boletos}
                 interactive
                 onCellClick={handleCellClick}
-                onCellHover={handleHover}
-                onCellLeave={handleLeave}
-                onCellTouch={handleTouch}
               />
             )}
             </div>
@@ -466,23 +445,10 @@ export default function PublicaPage() {
         </section>
       </div>
 
-      {tooltip.visible && (
-        <div
-          role="tooltip"
-          className="pointer-events-none fixed z-50 hidden rounded-md bg-foreground px-2.5 py-1 text-xs text-background shadow-md md:block"
-          style={{
-            left: tooltip.x + 12,
-            top: tooltip.y + 12,
-          }}
-        >
-          {tooltip.content}
-        </div>
-      )}
-
       {toast.visible && (
         <div
           role="status"
-          className="fixed inset-x-0 bottom-6 z-50 mx-auto w-fit max-w-[80%] rounded-full bg-foreground px-4 py-2 text-sm text-background shadow-lg md:hidden"
+          className="fixed inset-x-0 bottom-6 z-50 mx-auto w-fit max-w-[80%] rounded-full bg-foreground px-4 py-2 text-sm text-background shadow-lg"
         >
           {toast.content}
         </div>
