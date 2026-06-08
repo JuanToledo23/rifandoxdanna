@@ -1,11 +1,17 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Image, { type StaticImageData } from 'next/image'
+import posthog from 'posthog-js'
 
 import { BoletosGrid } from '@/components/BoletosGrid'
 import { supabase } from '@/lib/supabase/client'
 import type { Boleto } from '@/lib/types'
+
+function getDevice(): 'mobile' | 'desktop' {
+  if (typeof window === 'undefined') return 'desktop'
+  return window.matchMedia('(hover: none)').matches ? 'mobile' : 'desktop'
+}
 
 import licuadoraImg from '@/public/premios/licuadora.webp'
 import airFryerImg from '@/public/premios/air-fryer.webp'
@@ -119,6 +125,7 @@ export default function PublicaPage() {
   const [toast, setToast] = useState<ToastState>({ visible: false, content: '' })
   const [clabeCopied, setClabeCopied] = useState(false)
   const [selectedNumero, setSelectedNumero] = useState<number | null>(null)
+  const lastSoldInspectRef = useRef<number | null>(null)
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -128,10 +135,11 @@ export default function PublicaPage() {
     return () => document.removeEventListener('keydown', onKey)
   }, [])
 
-  async function copyClabe() {
+  async function copyClabe(source: 'instructions' | 'modal') {
     try {
       await navigator.clipboard.writeText(BANK_CLABE)
       setClabeCopied(true)
+      posthog.capture('clabe_copied', { source })
       window.setTimeout(() => setClabeCopied(false), 1500)
     } catch {
       // ignore — usuario puede seleccionar el texto manualmente
@@ -145,7 +153,14 @@ export default function PublicaPage() {
         const res = await fetch('/api/boletos')
         const data = await res.json()
         if (!cancelled) {
-          setBoletos(data.boletos ?? [])
+          const list: Boleto[] = data.boletos ?? []
+          setBoletos(list)
+          const vendidos = list.filter((b) => b.status === 'comprado').length
+          posthog.capture('boletos_loaded', {
+            vendidos,
+            disponibles: list.length - vendidos,
+            total: list.length,
+          })
         }
       } finally {
         if (!cancelled) setLoading(false)
@@ -183,10 +198,15 @@ export default function PublicaPage() {
 
   function handleHover(b: Boleto, x: number, y: number) {
     setTooltip({ visible: true, x, y, content: formatComprador(b) })
+    if (b.status === 'comprado' && lastSoldInspectRef.current !== b.numero) {
+      lastSoldInspectRef.current = b.numero
+      posthog.capture('boleto_sold_inspect', { numero: b.numero, device: 'desktop' })
+    }
   }
 
   function handleLeave() {
     setTooltip((t) => ({ ...t, visible: false }))
+    lastSoldInspectRef.current = null
   }
 
   function handleTouch(b: Boleto) {
@@ -194,11 +214,15 @@ export default function PublicaPage() {
     // abren el modal vía onCellClick.
     if (b.status !== 'comprado') return
     setToast({ visible: true, content: `#${String(b.numero).padStart(3, '0')} · ${formatComprador(b)}` })
+    posthog.capture('boleto_sold_inspect', { numero: b.numero, device: 'mobile' })
     window.setTimeout(() => setToast({ visible: false, content: '' }), 2000)
   }
 
   function handleCellClick(b: Boleto) {
     if (b.status !== 'disponible') return
+    const device = getDevice()
+    posthog.capture('boleto_available_click', { numero: b.numero, device })
+    posthog.capture('apartar_modal_opened', { numero: b.numero })
     setSelectedNumero(b.numero)
   }
 
@@ -325,7 +349,7 @@ export default function PublicaPage() {
                         </code>
                         <button
                           type="button"
-                          onClick={copyClabe}
+                          onClick={() => copyClabe('instructions')}
                           className="shrink-0 rounded-md border border-brand/30 bg-brand-soft px-2.5 py-1.5 text-xs font-semibold text-brand-deep transition hover:bg-brand/15 active:scale-95"
                           aria-label="Copiar CLABE"
                         >
@@ -358,6 +382,7 @@ export default function PublicaPage() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => posthog.capture('whatsapp_general_clicked')}
               className="btn-chunky group mt-5 inline-flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[#25D366] px-5 py-3.5 text-base font-bold text-white transition hover:bg-[#1ebe57]"
             >
               <svg
@@ -504,7 +529,7 @@ export default function PublicaPage() {
                   </code>
                   <button
                     type="button"
-                    onClick={copyClabe}
+                    onClick={() => copyClabe('modal')}
                     className="shrink-0 rounded-md border border-brand/30 bg-brand-soft px-2.5 py-1.5 text-xs font-semibold text-brand-deep transition hover:bg-brand/15 active:scale-95"
                     aria-label="Copiar CLABE"
                   >
@@ -530,7 +555,10 @@ export default function PublicaPage() {
                 href={buildWhatsAppUrlForNumero(selectedNumero)}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => setSelectedNumero(null)}
+                onClick={() => {
+                  posthog.capture('whatsapp_modal_clicked', { numero: selectedNumero })
+                  setSelectedNumero(null)
+                }}
                 className="btn-chunky group inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#25D366] px-3 text-sm font-bold text-white hover:bg-[#1ebe57]"
               >
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
