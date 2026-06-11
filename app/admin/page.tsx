@@ -13,7 +13,7 @@ import type { Session } from '@/lib/types'
 
 const TOTAL = 350
 const PRECIO = 100
-const GOAL_MXN = 23000
+const GOAL_MXN = 35000
 
 interface VendorRow {
   id: string

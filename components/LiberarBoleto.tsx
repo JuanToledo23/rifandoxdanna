@@ -28,7 +28,7 @@ export function LiberarBoleto({
   const [feedback, setFeedback] = useState<Feedback>({ kind: 'idle' })
 
   const numero = Number(value)
-  const valid = Number.isInteger(numero) && numero >= 1 && numero <= 300
+  const valid = Number.isInteger(numero) && numero >= 1 && numero <= 350
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -97,7 +97,7 @@ export function LiberarBoleto({
           type="number"
           inputMode="numeric"
           min={1}
-          max={300}
+          max={350}
           step={1}
           required
           placeholder="ej. 42"
