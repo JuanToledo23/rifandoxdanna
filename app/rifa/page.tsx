@@ -40,8 +40,8 @@ const BANK_NAME = 'Banamex'
 const BANK_HOLDER = 'Andrea Estrada Bustos'
 const BANK_CLABE = '002180701832645494'
 
-const SORTEO_INSTAGRAM = '@jandyy24'
-const SORTEO_INSTAGRAM_URL = 'https://instagram.com/jandyy24'
+const SORTEO_INSTAGRAM = '@rifadanna2.0'
+const SORTEO_INSTAGRAM_URL = 'https://instagram.com/rifadanna2.0'
 const SORTEO_FECHA = '26 de junio de 2026 · 6:00 PM'
 
 const PREMIOS: Array<{
@@ -113,8 +113,20 @@ export default function PublicaPage() {
   const [toast, setToast] = useState<ToastState>({ visible: false, content: '' })
   const [clabeCopied, setClabeCopied] = useState(false)
   const [selectedNumero, setSelectedNumero] = useState<number | null>(null)
+  const [updatePopupOpen, setUpdatePopupOpen] = useState(false)
   const toastTimerRef = useRef<number | null>(null)
   const confettiFiredRef = useRef(false)
+
+  useEffect(() => {
+    setUpdatePopupOpen(true)
+    posthog.capture('instagram_update_popup_shown')
+  }, [])
+
+  function closeUpdatePopup() {
+    setUpdatePopupOpen(false)
+    posthog.capture('instagram_update_popup_dismissed')
+    fireConfetti(2500)
+  }
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -185,12 +197,7 @@ export default function PublicaPage() {
     return { vendidos: v, disponibles: d, pct: p }
   }, [boletos])
 
-  useEffect(() => {
-    if (confettiFiredRef.current) return
-    if (loading || boletos.length === 0) return
-    if (disponibles >= 100) return
-    confettiFiredRef.current = true
-    const duration = 3000
+  function fireConfetti(duration = 3000) {
     const end = Date.now() + duration
     const colors = ['#E8734A', '#22C55E']
     const frame = () => {
@@ -211,6 +218,14 @@ export default function PublicaPage() {
       if (Date.now() < end) requestAnimationFrame(frame)
     }
     frame()
+  }
+
+  useEffect(() => {
+    if (confettiFiredRef.current) return
+    if (loading || boletos.length === 0) return
+    if (disponibles >= 100) return
+    confettiFiredRef.current = true
+    fireConfetti()
   }, [loading, boletos.length, disponibles])
 
   function showSoldToast(b: Boleto) {
@@ -509,6 +524,70 @@ export default function PublicaPage() {
         >
           {toast.content}
         </div>
+      )}
+
+      {updatePopupOpen && (
+        <>
+          <div
+            role="presentation"
+            aria-hidden="true"
+            onClick={closeUpdatePopup}
+            className="fixed inset-0 z-40 bg-black/45 backdrop-blur-sm animate-in fade-in duration-300"
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="instagram-update-title"
+            className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl border-t bg-card p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl animate-in slide-in-from-bottom-8 fade-in duration-500 md:inset-x-auto md:bottom-auto md:left-1/2 md:top-1/2 md:w-[min(28rem,calc(100vw-2rem))] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-3xl md:border md:p-7 md:pb-7 md:shadow-xl md:slide-in-from-bottom-0 md:zoom-in-90"
+          >
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-border md:hidden" />
+
+            <div className="flex flex-col items-center gap-2 pt-1 text-center">
+              <span
+                className="inline-block text-4xl animate-in zoom-in-50 spin-in-180 duration-700 delay-150 fill-mode-both"
+                aria-hidden="true"
+              >
+                📣
+              </span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-purple-deep animate-in fade-in slide-in-from-bottom-2 duration-500 delay-200 fill-mode-both">
+                Información actualizada
+              </span>
+              <h2
+                id="instagram-update-title"
+                className="font-display text-2xl font-black uppercase leading-tight tracking-tight text-brand-deep animate-in fade-in slide-in-from-bottom-3 duration-500 delay-300 fill-mode-both"
+              >
+                Nueva cuenta de Instagram
+              </h2>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-border/70 bg-background/50 p-4 text-sm leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-500 delay-400 fill-mode-both">
+              <p className="text-foreground/85">
+                El sorteo ahora se transmitirá en vivo desde nuestra nueva cuenta oficial:
+              </p>
+              <a
+                href={SORTEO_INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => posthog.capture('instagram_update_popup_link_clicked')}
+                className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-brand-soft px-4 py-3 font-display text-lg font-black text-brand-deep ring-1 ring-brand/25 transition hover:bg-brand/15 hover:scale-[1.02] active:scale-95"
+              >
+                <span aria-hidden="true">📸</span>
+                {SORTEO_INSTAGRAM}
+              </a>
+              <p className="mt-3 text-xs text-foreground/70">
+                Síguenos ahí para no perderte el sorteo en vivo el {SORTEO_FECHA}.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={closeUpdatePopup}
+              className="btn-chunky mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-purple px-5 text-sm font-bold text-white transition hover:bg-purple-deep hover:scale-[1.02] active:scale-95 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500 fill-mode-both"
+            >
+              ¡Entendido! 🎉
+            </button>
+          </div>
+        </>
       )}
 
       {selectedNumero != null && (
